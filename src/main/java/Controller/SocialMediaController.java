@@ -1,7 +1,9 @@
 package Controller;
 
+import DAO.SocialMediaDAOImpl;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import io.javalin.http.Handler;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -29,5 +31,14 @@ public class SocialMediaController {
         context.json("sample text");
     }
 
+    public void createNewMessage(String message){
+
+    }
+
+    public static Handler getAllMessages = ctx -> {
+        SocialMediaDAOImpl socialMedia = SocialMediaDAOImpl.instance(); 
+        /*Iterable<String> allUsers= dao.getAllUsernames(); 
+        ctx.json(allUsers);  */
+    }; 
 
 }
