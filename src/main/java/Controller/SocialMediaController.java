@@ -1,6 +1,10 @@
 package Controller;
 
+import java.util.List;
+
 import DAO.SocialMediaDAOImpl;
+import Model.Message;
+import Service.SocialMediaService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -11,6 +15,14 @@ import io.javalin.http.Handler;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 public class SocialMediaController {
+
+    SocialMediaService socialMediaService; 
+
+    public SocialMediaController(){
+        socialMediaService = new SocialMediaService(); 
+    }
+
+
     /**
      * In order for the test cases to work, you will need to write the endpoints in the startAPI() method, as the test
      * suite must receive a Javalin object from this method.
@@ -19,6 +31,7 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
+        app.get("/messages", this::getAllMessagesHandler);
 
         return app;
     }
@@ -37,8 +50,13 @@ public class SocialMediaController {
 
     public static Handler getAllMessages = ctx -> {
         SocialMediaDAOImpl socialMedia = SocialMediaDAOImpl.instance(); 
-        /*Iterable<String> allUsers= dao.getAllUsernames(); 
-        ctx.json(allUsers);  */
+        List<Message> allMessages = socialMedia.getAllMessages(); 
+        ctx.json(allMessages);  
     }; 
+
+
+    private void getAllMessagesHandler(Context ctx){
+        ctx.json(socialMediaService.getAllMessages()); 
+    }
 
 }

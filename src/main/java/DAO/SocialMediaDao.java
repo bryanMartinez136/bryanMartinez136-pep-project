@@ -1,13 +1,23 @@
 package DAO;
 
+import java.util.List;
+
+import Model.Message;
+
 public interface SocialMediaDao {
     // define CRUD operations 
-    /*Some examples 
-     *  public List<Employee> getAllEmployees();
-  public List<Employee> getEmployeesByLocation(String location);
-  public void updateEmployeeById(int id);
-  public void deleteEmployeeById(int id);
-  public void addEmployee(Employee e);
-     */
+    
+    public void createUser(); 
+    public void createNewMessage(Message message); 
+    public List<Message> getAllMessages(); 
+    public List<Message> getAllMessagesByMessageId(int message_id); 
+    public void deleteMessageById(int message_id); 
+    public void updateMessageById(int message_id); 
+    public List<Message> getAllMessagesByAccountId(int account_id); 
+
+ 
+
+
+
  
 }
