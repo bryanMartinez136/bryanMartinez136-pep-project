@@ -19,7 +19,7 @@ public class SocialMediaService {
         this.socialMediaDao = socialMediaDAO; 
     }
 
-    /*
+    /*#1 create new account
      * The registration will be successful if and only if the username is not blank, the password is at least 4 characters long,
 and an Account with that username does not already exist.
      */
@@ -33,7 +33,7 @@ and an Account with that username does not already exist.
         
     }
 
-
+    //#3 create new messag
     public Message createNewMessage(Message message){
         if(message.getMessage_text().equals("")){return null; }
         if(message.getMessage_text().length()>=255){return null; }
@@ -43,10 +43,15 @@ and an Account with that username does not already exist.
     }
 
 
-    // retreive all messages 
+    //#4 retreive all messages 
 
     public List<Message> getAllMessages(){
         return socialMediaDao.getAllMessages(); 
+    }
+
+    //#5 get message by its id
+    public Message getMessagesByMessageId(int message_id){
+        return socialMediaDao.getMessagesByMessageId(message_id); 
     }
 
 

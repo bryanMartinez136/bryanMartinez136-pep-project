@@ -208,25 +208,6 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
     }
 
 
-    /*
-     *  public void updateFlight(int id, Flight flight){
-        Connection connection = ConnectionUtil.getConnection();
-        try {
-            //Write SQL logic here
-            String sql = "update flight set departure_city=?, arrival_city=? where flight_id=? ;";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-
-            //write PreparedStatement setString and setInt methods here.
-            preparedStatement.setString(1,flight.getDeparture_city());
-            preparedStatement.setString(2,flight.getArrival_city());
-            preparedStatement.setInt(3,id);
-            preparedStatement.executeUpdate();
-        }catch(SQLException e){
-            System.out.println(e.getMessage());
-        }
-    }
-     */
-
     @Override
     public void updateMessageByMessageId(int message_id, Message message) {
         Connection connection = ConnectionUtil.getConnection(); 

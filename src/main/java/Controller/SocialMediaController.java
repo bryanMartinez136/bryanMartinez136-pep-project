@@ -38,7 +38,7 @@ public class SocialMediaController {
         app.patch("/messages/{message_id}", this::updateMessageByMessageIdHandler);
         app.post( "/register", this::createNewAccount); 
         app.post( "/messages", this::createNewMessageHandler); 
-
+        app.get("/messages/{message_id}", this::getMessageByIdHandler);
         return app;
     }
 
@@ -144,8 +144,19 @@ It is expected for the list to simply be empty if there are no messages. The res
      * 
     */
     
-    private void getMessageByIdHandler(Context ctx){
-        ctx.json(socialMediaService.getMessagesByMessageId()); 
+    private void getMessageByIdHandler(Context ctx) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper(); 
+        // Message message = mapper.readValue(ctx.body(), Message.class); 
+        int message_id = Integer.parseInt(ctx.pathParam("message_id")); 
+        
+       
+        Message retreivedMessage = socialMediaService.getMessagesByMessageId(message_id);  
+        System.out.println(retreivedMessage);
+        if(retreivedMessage == null){
+            ctx.status(200); 
+        }else{
+            ctx.json(mapper.writeValueAsString(retreivedMessage)); 
+        }
     }
     
     /*
