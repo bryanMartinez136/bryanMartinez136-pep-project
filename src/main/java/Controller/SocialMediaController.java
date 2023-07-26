@@ -37,7 +37,7 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);
         app.patch("/messages/{message_id}", this::updateMessageByMessageIdHandler);
         app.post( "/register", this::createNewAccount); 
-        app.post("/messages", this::createNewMessageHandler());
+        // app.post("/messages", this::createNewMessageHandler());
 
         return app;
     }
@@ -110,9 +110,9 @@ account_id. The response status should be 200 OK, which is the default.
       - If the creation of the message is not successful, the response status should be 400. (Client error)
     */
     
-    private void createNewMessageHandler(Context ctx){
-        ctx.json(socialMediaService.createNewMessage());  
-    }
+    // private void createNewMessageHandler(Context ctx){
+    //     ctx.json(socialMediaService.createNewMessage());  
+    // }
 
     
     
