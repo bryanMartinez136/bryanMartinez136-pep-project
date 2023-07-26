@@ -34,8 +34,12 @@ and an Account with that username does not already exist.
     }
 
 
-    public void createNewMessage(){
-        socialMediaDao.createNewMessage(null);
+    public Message createNewMessage(Message message){
+        if(message.getMessage_text().equals("")){return null; }
+        if(message.getMessage_text().length()>=255){return null; }
+
+        return socialMediaDao.createNewMessage(message);
+
     }
 
 
@@ -49,8 +53,14 @@ and an Account with that username does not already exist.
     // #7 update message by id
 
     public Message updateMessage(int message_id, Message message){
-        socialMediaDao.updateMessageByMessageId(message_id, message);
         // need to do error handling
+        // - The update of a message should be successful if and only if the message id already exists and the new
+    //  message_text is not blank and is not over 255 characters
+        if(message.getMessage_text().length() >=255){return null; }
+        if(message.getMessage_text().equals("")){return null; }
+        
+        socialMediaDao.updateMessageByMessageId(message_id, message);
+        
         return socialMediaDao.getMessagesByMessageId(message_id); 
     }
 

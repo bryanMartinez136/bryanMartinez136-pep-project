@@ -40,8 +40,7 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
     // dao object to access database and create a user. 
     @Override
     public Account createUser(Account account) {
-        // if(accountExists(account)){return null; }
-
+        
         Connection connection = ConnectionUtil.getConnection(); 
         try {
             String sql = "insert into account (username, password) values(?,?)"; 
@@ -51,7 +50,7 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
             preparedStatement.setString(2,account.getPassword());
 
             preparedStatement.executeUpdate();
-
+            
             ResultSet rs = preparedStatement.getGeneratedKeys(); 
             if(rs.next()){
                 int generated_account_id = (int) rs.getLong(1); 
@@ -62,46 +61,63 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
             // TODO: handle exception
             e.printStackTrace();
         }
-
+        
         return null; 
     }
     
-    // // private helper function to check if an account already exists
-    // private boolean accountExists(Account account){
-    //     Connection connection = ConnectionUtil.getConnection(); 
-    //     try {
-    //         String sql = "select count(account_id) from account where account_id=?"; 
-    //         PreparedStatement preparedStatement = connection.prepareStatement(sql); 
-    //         preparedStatement.setInt(1, account.getAccount_id()); 
-
-    //         ResultSet rs = preparedStatement.executeQuery(); 
-    //         if(rs.getFetchSize() > 1){
-    //             return true; 
-    //         } 
-
-    //     } catch (Exception e) {
-    //         // TODO: handle exception
-    //     }
-    //     return false; 
-    // }
+    // private helper function to check if an account already exists
+    private boolean accountExists(int account_id){
+        Connection connection = ConnectionUtil.getConnection(); 
+        int count = 0; 
+        try {
+            String sql = "select count(account_id) from account where account_id=?"; 
+            PreparedStatement preparedStatement = connection.prepareStatement(sql); 
+            preparedStatement.setInt(1, account_id); 
+            
+            ResultSet rs = preparedStatement.executeQuery(); 
+            if(rs.next()){
+                count = rs.getInt(1);
+            } 
+            
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        // if count is greater than zero, then there exists an account in the databse with the account_id
+        if(count>0){return true; }
+        return false; 
+    }
 
     @Override
-    public void createNewMessage(Message message) {
-        // TODO Auto-generated method stub
+    public Message createNewMessage(Message message) {
+
+        // if the method returns false, there is no such account in the data base and
+        //should return null. 
+        if(!accountExists(message.getPosted_by())){return null; }
+
+        //otherwise, continue as normal 
         Connection connection = ConnectionUtil.getConnection(); 
         try {
-            String sql = "insert into message values(?,?,?)"; 
+            String sql = "insert into message (posted_by, message_text, time_posted_epoch) values(?,?,?)"; 
+
             PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             preparedStatement.setInt(1,message.getPosted_by()); 
             preparedStatement.setString(2,message.getMessage_text());
             preparedStatement.setLong(3,message.getTime_posted_epoch());
 
             preparedStatement.executeUpdate(); 
+            ResultSet rs = preparedStatement.getGeneratedKeys(); 
+
+            if(rs.next()){
+                int message_id = (int)rs.getLong(1); 
+                return new Message(message_id,message.getPosted_by(),  message.getMessage_text(), message.getTime_posted_epoch()); 
+            }
+            
             
         } catch (SQLException e) {
             // TODO: handle exception
             e.printStackTrace();
         }
+        return null; 
     }
 
 
@@ -166,7 +182,6 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
             while(rs.next()){
                 Message message = new Message(rs.getInt("message_id"), rs.getInt("posted_by"),
                 rs.getString("message_text"),rs.getLong("time_posted_epoch")); 
-                System.out.println(message.getMessage_text());
                 return message; 
             }
             
@@ -217,13 +232,12 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
         Connection connection = ConnectionUtil.getConnection(); 
 
         try {
-            String sql = "update message set posted_by=?, message_text=?, time_posted_epoch=? where message_id=?"; 
+            // string sql won't update if message id is not in the table. 
+            String sql = "update message set message_text=? where message_id=?;"; 
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             // set parameters here
-            preparedStatement.setInt(1, message.getPosted_by()); 
-            preparedStatement.setString(2, message.getMessage_text());
-            preparedStatement.setLong(3,message.getTime_posted_epoch());
-            preparedStatement.setInt(4,message_id);
+            preparedStatement.setString(1, message.getMessage_text());
+            preparedStatement.setInt(2,message_id);
             preparedStatement.executeUpdate(); 
         } catch (SQLException e) {
             // TODO Auto-generated catch block

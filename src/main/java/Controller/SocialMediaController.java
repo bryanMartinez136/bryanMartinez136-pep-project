@@ -37,7 +37,7 @@ public class SocialMediaController {
         app.get("/messages", this::getAllMessagesHandler);
         app.patch("/messages/{message_id}", this::updateMessageByMessageIdHandler);
         app.post( "/register", this::createNewAccount); 
-        // app.post("/messages", this::createNewMessageHandler());
+        app.post( "/messages", this::createNewMessageHandler); 
 
         return app;
     }
@@ -110,11 +110,19 @@ account_id. The response status should be 200 OK, which is the default.
       - If the creation of the message is not successful, the response status should be 400. (Client error)
     */
     
-    // private void createNewMessageHandler(Context ctx){
-    //     ctx.json(socialMediaService.createNewMessage());  
-    // }
+    private void createNewMessageHandler(Context ctx) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(ctx.body(), Message.class); 
 
-    
+        Message createdMessage = socialMediaService.createNewMessage(message); 
+        if(createdMessage == null){
+            ctx.status(400); 
+        }
+        else{
+            ctx.json(mapper.writeValueAsString(createdMessage));
+        }
+
+    }    
     
     /*
 ## 4: Our API should be able to retrieve all messages.
@@ -137,7 +145,7 @@ It is expected for the list to simply be empty if there are no messages. The res
     */
     
     private void getMessageByIdHandler(Context ctx){
-
+        ctx.json(socialMediaService.getMessagesByMessageId()); 
     }
     
     /*
@@ -172,19 +180,6 @@ It is expected for the list to simply be empty if there are no messages. The res
     - If the update of the message is not successful for any reason, the response status should be 400. (Client error)
       */
 
-      /*
-       *  ObjectMapper mapper = new ObjectMapper();
-        Flight flight = mapper.readValue(ctx.body(), Flight.class);
-        int flight_id = Integer.parseInt(ctx.pathParam("flight_id"));
-        Flight updatedFlight = flightService.updateFlight(flight_id, flight);
-        System.out.println(updatedFlight);
-        if(updatedFlight == null){
-            ctx.status(400);
-        }else{
-            ctx.json(mapper.writeValueAsString(updatedFlight));
-        }
-
-       */
 
       private void updateMessageByMessageIdHandler(Context ctx) throws JsonMappingException, JsonProcessingException{
         // to do 
@@ -193,12 +188,11 @@ It is expected for the list to simply be empty if there are no messages. The res
         Message message = mapper.readValue(ctx.body(), Message.class); 
         int message_id = Integer.parseInt(ctx.pathParam("message_id")); 
         Message updatedMessage = socialMediaService.updateMessage(message_id, message); 
-        // System.out.println(updatedMessage);
+        System.out.println(updatedMessage);
         // System.out.println(message.getMessage_text());
         if(updatedMessage == null){
             ctx.status(400); 
         }else{
-            ctx.status(200); 
             ctx.json(mapper.writeValueAsString(updatedMessage)); 
         }
 
