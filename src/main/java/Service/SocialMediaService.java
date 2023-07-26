@@ -7,6 +7,7 @@ import Model.Account;
 import Model.Message;
 
 public class SocialMediaService {
+    
     SocialMediaDAOImpl socialMediaDao;
 
     //No-args constructor
@@ -42,14 +43,10 @@ and an Account with that username does not already exist.
     public Message createNewMessage(Message message){
         if(message.getMessage_text().equals("")){return null; }
         if(message.getMessage_text().length()>=255){return null; }
-
         return socialMediaDao.createNewMessage(message);
-
     }
 
-
     //#4 retreive all messages 
-
     public List<Message> getAllMessages(){
         return socialMediaDao.getAllMessages(); 
     }
@@ -64,9 +61,7 @@ and an Account with that username does not already exist.
         Message message = socialMediaDao.getMessagesByMessageId(message_id); 
         socialMediaDao.deleteMessageByMessageId(message_id);
         return message; 
-
     }
-
 
     // #7 update message by id
 
