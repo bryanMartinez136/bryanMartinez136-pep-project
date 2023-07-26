@@ -241,8 +241,8 @@ It is expected for the list to simply be empty if there are no messages. The res
        there are no messages. The response status should always be 200, which is the default.
        */
       private void getAllMessagesByAccountIdHandler(Context ctx){
-        ObjectMapper mapper = new ObjectMapper(); 
         int account_id = Integer.parseInt(ctx.pathParam("account_id")); 
+        System.out.println(account_id);
         ctx.json(socialMediaService.getMessagesByAccountId(account_id)); 
       }
 }

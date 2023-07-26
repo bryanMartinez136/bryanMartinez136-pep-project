@@ -256,7 +256,7 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
         List<Message> messages = new ArrayList<>(); 
         try {
             
-            String sql = "select * from messages where posted_by = ? "; 
+            String sql = "select * from message where posted_by = ? "; 
             PreparedStatement preparedStatement = connetcion.prepareStatement(sql);
             preparedStatement.setInt(1, account_id); 
             ResultSet rs = preparedStatement.executeQuery(); 
