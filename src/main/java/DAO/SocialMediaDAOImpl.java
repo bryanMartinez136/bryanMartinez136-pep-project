@@ -65,6 +65,28 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
         return null; 
     }
     
+    public Account loginUser(Account account){
+        Connection connection = ConnectionUtil.getConnection(); 
+
+        try {
+            String sql = "select * from account where username=? and password=? "; 
+            PreparedStatement preparedStatement = connection.prepareStatement(sql); 
+            preparedStatement.setString(1,account.getUsername());
+            preparedStatement.setString(2,account.getPassword());
+            ResultSet rs = preparedStatement.executeQuery(); 
+            if(rs.next()){
+                return new Account(rs.getInt("account_id"),rs.getString("username"), rs.getString("password")); 
+            }
+
+
+        } catch (SQLException e) {
+
+        }
+
+        return null; 
+
+    }
+    
     // private helper function to check if an account already exists
     private boolean accountExists(int account_id){
         Connection connection = ConnectionUtil.getConnection(); 
@@ -200,6 +222,7 @@ public class SocialMediaDAOImpl implements SocialMediaDao {
             String sql = "delete from message where message_id = ? "; 
             PreparedStatement preparedStatement = connection.prepareStatement(sql); 
             preparedStatement.setInt(1, message_id);
+            preparedStatement.executeUpdate(); 
         } catch (SQLException e) {
             // TODO: handle exception
             e.printStackTrace();

@@ -9,6 +9,7 @@ public interface SocialMediaDao {
     // define CRUD operations 
     
     public Account createUser(Account account); 
+    public Account loginUser(Account account); 
     public Message createNewMessage(Message message); 
     public List<Message> getAllMessages(); 
     public Message getMessagesByMessageId(int message_id); 

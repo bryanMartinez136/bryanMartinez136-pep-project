@@ -39,6 +39,9 @@ public class SocialMediaController {
         app.post( "/register", this::createNewAccount); 
         app.post( "/messages", this::createNewMessageHandler); 
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
+        app.delete("/messages/{message_id}", this::deleteMessageByMessageIdHandler); 
+        app.post("/login", this::loginToAccount);
+        app.get("/accounts/{account_id}/messages", this::getAllMessagesByAccountIdHandler); 
         return app;
     }
 
@@ -94,7 +97,16 @@ account_id. The response status should be 200 OK, which is the default.
 - If the login is not successful, the response status should be 401. (Unauthorized)
 */
 
-    public void loginToAccount(Context ctx){
+    public void loginToAccount(Context ctx) throws JsonMappingException, JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper(); 
+        Account account = mapper.readValue(ctx.body(), Account.class); 
+        Account loginAccount = socialMediaService.login(account); 
+
+        if(loginAccount == null){
+            ctx.status(401); 
+        }else {
+            ctx.json(mapper.writeValueAsString(loginAccount)); 
+        }
 
     }
 
@@ -172,8 +184,16 @@ It is expected for the list to simply be empty if there are no messages. The res
     
      */
 
-     private void deleteMessageByMessageIdHandler(){
-
+     private void deleteMessageByMessageIdHandler(Context ctx) throws JsonProcessingException{
+        ObjectMapper mapper = new ObjectMapper(); 
+        int message_id = Integer.parseInt(ctx.pathParam("message_id")); 
+        
+        Message deletedMessage = socialMediaService.deleteMessageById(message_id); 
+        if(deletedMessage == null){
+            ctx.status(200); 
+        }else{
+            ctx.json(mapper.writeValueAsString(deletedMessage)); 
+        }
      }
     
     /*
@@ -220,7 +240,9 @@ It is expected for the list to simply be empty if there are no messages. The res
        particular user, which is retrieved from the database. It is expected for the list to simply be empty if 
        there are no messages. The response status should always be 200, which is the default.
        */
-      private void getAllMessagesByAccountIdHandler(){
-
+      private void getAllMessagesByAccountIdHandler(Context ctx){
+        ObjectMapper mapper = new ObjectMapper(); 
+        int account_id = Integer.parseInt(ctx.pathParam("account_id")); 
+        ctx.json(socialMediaService.getMessagesByAccountId(account_id)); 
       }
 }

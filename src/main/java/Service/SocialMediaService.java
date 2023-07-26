@@ -33,6 +33,11 @@ and an Account with that username does not already exist.
         
     }
 
+    //#2 login a user
+    public Account login(Account account){
+        return socialMediaDao.loginUser(account); 
+    }
+
     //#3 create new messag
     public Message createNewMessage(Message message){
         if(message.getMessage_text().equals("")){return null; }
@@ -54,6 +59,14 @@ and an Account with that username does not already exist.
         return socialMediaDao.getMessagesByMessageId(message_id); 
     }
 
+    //#6 delelte message by it's id
+    public Message deleteMessageById(int message_id){
+        Message message = socialMediaDao.getMessagesByMessageId(message_id); 
+        socialMediaDao.deleteMessageByMessageId(message_id);
+        return message; 
+
+    }
+
 
     // #7 update message by id
 
@@ -67,6 +80,11 @@ and an Account with that username does not already exist.
         socialMediaDao.updateMessageByMessageId(message_id, message);
         
         return socialMediaDao.getMessagesByMessageId(message_id); 
+    }
+
+    //#8 get messages by id
+    public List<Message> getMessagesByAccountId(int account_id){
+        return socialMediaDao.getMessagesByAccountId(account_id); 
     }
 
 }
